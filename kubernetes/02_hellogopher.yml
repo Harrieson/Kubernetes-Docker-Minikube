@@ -1,0 +1,34 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: hellogopher
+  namespace: hellogopher
+spec: # State you want for this object
+  selector:
+    matchLabels:
+      app: hellogopher
+  replicas: 1
+  template: #Blue print for each new pods. Follow this template
+    metadata:
+      labels:
+        app: hellogopher
+    spec:
+      containers:
+      - name: hellogopher
+        image: harrie/hellogopher:3.0
+        imagePullPolicy: IfNotPresent 
+        ports:
+        - containerPort: 8080
+        readinessProbe:
+          initialDelaySeconds: 10
+          timeoutSeconds: 5
+          httpGet:
+            path: /
+            port: 8080
+        livenessProbe:
+          initialDelaySeconds: 5
+          timeoutSeconds: 2
+          failureThreshold: 3
+          httpGet:
+            path: /
+            port: 8080
